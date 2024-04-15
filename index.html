@@ -1,887 +1,214 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
-
-    <style>
-      body {
-        margin: 0;
-        padding: 0;
-        width: 100vw;
-        height: 100vh;
-      }
-
-      .body {
-        width: 100vw;
-        height: 100vh;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        overflow: hidden;
-        background-color: #000;
-      }
-
-      .base {
-        background: #cacaca;
-        width: 20vmin;
-        border-radius: 27vmin;
-        box-shadow: 0 6vmin 0.15vmin 0vmin #777, 0 4vmin 0.15vmin 0vmin #777,
-          0 2vmin 0.15vmin 0vmin #777;
-        padding: 0vmin 2vmin 2vmin 2vmin;
-        z-index: 1;
-        transform: rotateX(60deg) rotateZ(0deg);
-        margin-top: -4.5vmin;
-        height: 22vmin;
-      }
-
-      button#activate {
-        background: #d60505;
-        border: 0;
-        width: 20vmin;
-        height: 19vmin;
-        border-radius: 100%;
-        position: relative;
-        cursor: pointer;
-        outline: none;
-        z-index: 2;
-        box-shadow: 0 4vmin 0.15vmin 0vmin #af0000,
-          0 2vmin 0.15vmin 0vmin #af0000;
-        top: -2.5vmin;
-        border: 0.5vmin solid #af0000a1;
-        transition: all 0.25s ease 0s;
-      }
-
-      button#activate:hover {
-        box-shadow: 0 3vmin 0.15vmin 0vmin #af0000,
-          0 1vmin 0.15vmin 0vmin #af0000;
-        top: -1.5vmin;
-        transition: all 0.5s ease 0s;
-      }
-
-      button#activate:active,
-      button#activate.pushed {
-        box-shadow: 0 1vmin 0.15vmin 0vmin #af0000,
-          0 1vmin 0.15vmin 0vmin #af0000;
-        top: 0.5vmin;
-        transition: all 0.25s ease 0s;
-      }
-
-      button#activate.pushed {
-        box-shadow: 0 0 20px 10px #ff3c3c, 0 0 100px 50px #ff2828;
-        background: #ff0000;
-        border-bottom: 3px solid #00000020;
-      }
-
-      .box {
-        transform: rotateX(-35deg) rotateY(45deg) rotateZ(0deg)
-          rotate3d(1, 0, 0, 90deg);
-        transform-origin: center top;
-        transform-style: preserve-3d;
-        width: 45vmin;
-        position: absolute;
-        z-index: 5;
-        margin-top: 27vmin;
-        transition: transform 1s ease 0s;
-        cursor: pointer;
-        height: 45vmin;
-        margin-left: -32vmin;
-      }
-
-      .box.opened {
-        transform: rotateX(-35deg) rotateY(45deg) rotateZ(0deg)
-          rotate3d(1, 0, 0, 180deg);
-      }
-
-      .box div {
-        position: absolute;
-        width: 45vmin;
-        height: 45vmin;
-        background: #00bcd47d;
-        opacity: 0.5;
-        border: 3px solid #00a4b9;
-        border-radius: 3px;
-        box-sizing: border-box;
-        box-shadow: 0 0 3px 0 #00bcd48a;
-      }
-
-      .box > div:nth-child(1) {
-        opacity: 0;
-      }
-
-      .box > div:nth-child(2) {
-        transform: rotateX(90deg) translate3d(0px, 5vmin, 5vmin);
-        height: 10vmin;
-      }
-
-      .box > div:nth-child(3) {
-        transform: rotateX(0deg) translate3d(0, 0, 10vmin);
-      }
-
-      .box > div:nth-child(4) {
-        transform: rotateX(270deg) translate3d(0px, -5vmin, 40vmin);
-        height: 10vmin;
-      }
-
-      .box > div:nth-child(5) {
-        transform: rotateY(90deg) translate3d(-5vmin, 0, 40vmin);
-        width: 10vmin;
-      }
-
-      .box > div:nth-child(6) {
-        transform: rotateY(-90deg) translate3d(5vmin, 0vmin, 5vmin);
-        width: 10vmin;
-      }
-
-      .grid {
-        background: repeating-linear-gradient(
-            150deg,
-            rgba(255, 255, 255, 0) 0,
-            rgba(255, 255, 255, 0) 49px,
-            rgb(255 255 255 / 10%) 50px,
-            rgb(0 0 0 / 30%) 51px,
-            rgba(255, 255, 255, 0) 55px
-          ),
-          repeating-linear-gradient(
-            30deg,
-            rgba(255, 255, 255, 0) 0,
-            rgba(255, 255, 255, 0) 49px,
-            rgb(255 255 255 / 10%) 50px,
-            rgb(0 0 0 / 30%) 51px,
-            rgba(255, 255, 255, 0) 55px
-          );
-        position: fixed;
-        width: 200vw;
-        height: 150vh;
-      }
-
-      .warning {
-        position: absolute;
-        z-index: 0;
-        width: 45vmin;
-        height: 45vmin;
-        background: repeating-linear-gradient(
-          -45deg,
-          black,
-          black 3vmin,
-          yellow 3vmin,
-          yellow 6vmin
-        );
-        transform: rotateX(-35deg) rotateY(45deg) rotateZ(0deg)
-          rotate3d(1, 0, 0, 90deg);
-        box-shadow: 0 0 0 3vmin #af0000;
-      }
-
-      .warning:before {
-        content: "";
-        width: 80%;
-        height: 80%;
-        background: linear-gradient(45deg, #000000 0%, #414141 74%);
-        float: left;
-        margin-top: 10%;
-        margin-left: 10%;
-        border: 1vmin solid yellow;
-        border-radius: 1vmin;
-        box-sizing: border-box;
-      }
-
-      .warning:after {
-        content: "DON'T\2009 PUSH";
-        color: white;
-        transform: rotate(90deg);
-        float: left;
-        background: #af0000;
-        position: absolute;
-        bottom: 18.5vmin;
-        left: -35vmin;
-        font-size: 5vmin;
-        font-family: Arial, Helvetica, serif;
-        width: 49vmin;
-        text-align: center;
-        padding: 1vmin;
-        text-shadow: 0 0 1px #000, 0 0 1px #000, 0 0 1px #000;
-      }
-
-      .hinges {
-        position: absolute;
-        z-index: 3;
-        transform: rotateX(-35deg) rotateY(45deg) rotateZ(0deg)
-          rotate3d(1, 0, 0, 90deg);
-      }
-
-      .hinges:before,
-      .hinges:after {
-        content: "";
-        background: #2b2b2b;
-        width: 5vmin;
-        height: 1.5vmin;
-        position: absolute;
-        margin-top: -24.5vmin;
-        z-index: 5;
-        border: 2px solid #00000010;
-        border-radius: 5px 5px 0 0;
-        box-sizing: border-box;
-        margin-left: -16.25vmin;
-      }
-
-      .hinges:after {
-        margin-left: 13.75vmin;
-        margin-top: -24.5vmin;
-      }
-
-      .box > span:before,
-      .box > span:after {
-        content: "";
-        width: 5vmin;
-        height: 1.5vmin;
-        background: #103e4480;
-        position: absolute;
-        margin-left: 6vmin;
-        border-radius: 0 0 5px 5px;
-      }
-
-      .box > span:after {
-        margin-left: 36vmin;
-      }
-
-      .box > span {
-        transform: rotateX(89deg) translate(0.3vmin, 0.3vmin);
-        position: absolute;
-      }
-
-      .text {
-        position: absolute;
-        margin-top: 55vmin;
-        color: white;
-        font-family: Arial, Helvetica, serif;
-        font-size: 5vmin;
-        text-shadow: 0 0 1px #000, 0 0 1px #000, 0 0 1px #000;
-        perspective-origin: left;
-        background: #af0000;
-        padding: 1vmin;
-        transform: rotateX(-35deg) rotateY(45deg) rotateZ(0deg)
-          rotate3d(1, 0, 0, 90deg) translate(33.5vmin, -2vmin);
-        text-align: center;
-        width: 49vmin;
-      }
-
-      div#panel:before {
-        content: "DO YOU LOVE ME ?";
-        top: 3vmin;
-        position: relative;
-        font-size: 8vmin;
-        width: 100vw;
-        left: 0;
-        z-index: 6;
-        text-shadow: 0 0 1px #fff, 0 0 3px #fff;
-        border-bottom: 1vmin dotted #fff;
-      }
-
-      #panel {
-        position: absolute;
-        background: #ff0000d0;
-        color: #ffffff;
-        font-family: Arial, Helvetica, serif;
-        width: 90vmin;
-        box-sizing: border-box;
-        font-size: 3.25vmin;
-        padding: 1vmin 2vmin;
-        height: 60vmin;
-        box-shadow: 0 0 0 100vmin #ff000060, 0 0 0 5vmin #ff000060;
-        z-index: 5;
-        display: none;
-        text-align: center;
-        text-shadow: 0 0 1px #fff, 0 0 3px #fff, 0 0 5px #fff;
-        animation: warning-ligth 1s 0s infinite;
-      }
-
-      #panel.show {
-        display: block !important;
-      }
-
-      #msg {
-        margin-top: 5vmin;
-        text-shadow: 0 0 2px #fff;
-      }
-
-      #time {
-        font-size: 10vmin;
-        background: #00000080;
-        max-width: 35vmin;
-        margin: 6vmin auto 5vmin !important;
-        position: relative;
-        border-radius: 0.25vmin;
-        text-shadow: 0 0 3px #000, 0 0 2px #000, 0 0 3px #000, 0 0 4px #000,
-          0 0 5px #000;
-        padding: 1vmin 0;
-      }
-
-      #time:before {
-        content: "00:0";
-      }
-
-      #abort,
-      #accept {
-        background: #ffffffb8;
-        color: #d30303;
-        cursor: pointer;
-        padding: 1vmin 2.75vmin;
-        font-size: 6vmin;
-        border-radius: 0.25vmin;
-        font-weight: bold;
-        animation: highlight 1s 0s infinite;
-      }
-
-      #abort:hover {
-        background: #ffffff;
-        box-shadow: 0 0 15px 5px #fff;
-      }
-
-      @keyframes highlight {
-        50% {
-          box-shadow: 0 0 15px 5px #fff;
-        }
-      }
-
-      div#turn-off {
-        position: fixed;
-        background: #ffffff80;
-        left: 0;
-        width: 100vw;
-        height: 0vh;
-        z-index: 7;
-      }
-
-      div#turn-off:before,
-      div#turn-off:after {
-        content: "";
-        position: fixed;
-        left: 0;
-        top: 0;
-        height: 0vh;
-        background: #000;
-        width: 100vw;
-        transition: height 0.5s ease 0s;
-      }
-
-      div#turn-off:after {
-        top: inherit;
-        bottom: 0;
-      }
-
-      div#turn-off.close {
-        height: 100vh;
-      }
-
-      div#turn-off.close:before,
-      div#turn-off.close:after {
-        transition: height 0.1s ease 0.1s;
-        height: 49.75vh;
-      }
-
-      #time.crono {
-        background: #ffffffba;
-        transition: background 0.5s ease 0s;
-        color: #ff0000;
-        text-shadow: 0 0 1px #ffffff, 0 0 2px #ffffff, 0 0 2px #ffffff;
-      }
-
-      #detonate {
-        display: none;
-        color: #fff;
-        z-index: 5;
-        font-size: 8vmin;
-        font-family: Arial, Helvetica, serif;
-        text-shadow: 0 0 1px #fff, 0 0 2px #fff, 0 0 3px #fff;
-      }
-
-      #detonate.show {
-        display: block;
-        animation: blink 0.25s 0s infinite;
-      }
-
-      #abort.hide {
-        display: none;
-      }
-
-      @keyframes blink {
-        50% {
-          opacity: 0;
-        }
-      }
-
-      #closing {
-        width: 100vw;
-        height: 100vh;
-        left: 0;
-        position: absolute;
-      }
-
-      div#closing:before,
-      div#closing:after {
-        content: "";
-        width: 50vw;
-        height: 1.5vh;
-        left: -50vw;
-        top: 49vh;
-        position: absolute;
-        background: #000000;
-        z-index: 7;
-        transition: left 0.2s ease 0s;
-      }
-
-      div#closing:after {
-        right: -50vw;
-        transition: right 0.2s ease 0s;
-        left: initial;
-      }
-
-      div#closing.close:before {
-        left: 0;
-        transition: left 0.2s ease 0.2s;
-      }
-
-      div#closing.close:after {
-        right: 0;
-        transition: right 0.2s ease 0.2s;
-      }
-
-      #restart {
-        position: absolute;
-        z-index: 8;
-        display: none;
-      }
-
-      #reload {
-        position: absolute;
-        z-index: 8;
-        width: 10vmin;
-        height: 10vmin;
-        border-radius: 100%;
-        border: 0;
-        margin-top: -5vmin;
-        margin-left: -2.5vmin;
-        opacity: 0;
-        cursor: pointer;
-        transform: rotate(0deg);
-        transition: transform 0.5s ease 0s;
-        outline: none;
-      }
-
-      #reload:hover {
-        background: #ef0000;
-        transform: rotate(360deg);
-        transition: transform 0.5s ease 0s;
-      }
-
-      #restart.show {
-        display: block;
-      }
-
-      #restart.show #reload {
-        animation: refresh 3.5s 0s 1;
-        opacity: 1;
-      }
-
-      @keyframes refresh {
-        0% {
-          opacity: 0;
-        }
-
-        50% {
-          opacity: 0;
-        }
-
-        100% {
-          opacity: 1;
-        }
-      }
-
-      button#reload:before {
-        content: "";
-        width: 6vmin;
-        height: 6vmin;
-        position: absolute;
-        left: 2vmin;
-        top: 2vmin;
-        border-radius: 100%;
-        border: 1vmin solid #000;
-        box-sizing: border-box;
-        border-bottom-color: transparent;
-      }
-
-      button#reload:after {
-        content: "";
-        border: 1.25vmin solid transparent;
-        border-top: 2vmin solid black;
-        position: absolute;
-        transform: rotate(40deg) translate(0.5vmin, 1.25vmin);
-      }
-
-      @keyframes warning-ligth {
-        0% {
-          box-shadow: 0 0 0 100vmin #ff000060, 0 0 0 5vmin #ff000060;
-        }
-
-        50% {
-          box-shadow: 0 0 0 100vmin #ff000020, 0 0 0 5vmin #ff000020;
-        }
-      }
-
-      #mute {
-        position: absolute;
-        bottom: 1vmin;
-        right: 1vmin;
-        background: #8bc34a80;
-        width: 6vmin;
-        height: 6vmin;
-        cursor: pointer;
-        border: 0.5vmin solid #151515;
-      }
-
-      #mute.muted {
-        background: #ff000080;
-      }
-
-      #mute:before {
-        content: "";
-        border: 0.75vmin solid transparent;
-        height: 2vmin;
-        border-right: 2vmin solid #151515;
-        position: absolute;
-        border-left-width: 0;
-        top: 1.25vmin;
-        right: 1.25vmin;
-      }
-
-      #mute:after {
-        content: "";
-        border: 0vmin solid transparent;
-        height: 2vmin;
-        border-right: 1.5vmin solid #151515;
-        position: absolute;
-        top: 2vmin;
-        right: 3.5vmin;
-      }
-    </style>
-
-    <style>
-      /* Explanation in JS tab */
-
-      /* Cool font from Google Fonts! */
-      @import url("https://fonts.googleapis.com/css?family=Raleway:900&display=swap");
-
-      body {
-        background: linear-gradient(to right, pink 0%, white 100%);
-      }
-
-      /* Your average text styling */
-      #text1,
-      #text2 {
-        color: deeppink;
-        position: absolute;
-        width: 100%;
-        display: inline-block;
-
-        font-family: cursive;
-        font-size: 80pt;
-
-        text-align: center;
-
-        user-select: none;
-      }
-    </style>
-  </head>
-
-  <body>
-    <div
-      id="container"
-      style="
-        display: none;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-      "
-    >
-      <span id="text1"></span>
-      <span id="text2"></span>
-
-      <svg id="filters">
-        <defs>
-          <filter id="threshold">
-            <feColorMatrix
-              in="SourceGraphic"
-              type="matrix"
-              values="1 0 0 0 0
-									0 1 0 0 0
-									0 0 1 0 0
-									0 0 0 255 -140"
-            />
-          </filter>
-        </defs>
-      </svg>
-    </div>
-
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xml:lang="en" xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<link rel="icon" type="image/png" href="image/favicon.ico">
+		<title>Quốc tế phụ nữ</title>    
+        <link type="text/css" rel="stylesheet" href="./renxi/default.css">
+		<script type="text/javascript" src="./renxi/jquery.min.js"></script>
+		<script type="text/javascript" src="./renxi/jscex.min.js"></script>
+		<script type="text/javascript" src="./renxi/jscex-parser.js"></script>
+		<script type="text/javascript" src="./renxi/jscex-jit.js"></script>
+		<script type="text/javascript" src="./renxi/jscex-builderbase.min.js"></script>
+		<script type="text/javascript" src="./renxi/jscex-async.min.js"></script>
+		<script type="text/javascript" src="./renxi/jscex-async-powerpack.min.js"></script>
+		<script type="text/javascript" src="./renxi/functions.js" charset="utf-8"></script>
+        <script type="text/javascript" src="./renxi/love.js" charset="utf-8"></script>
+
+</head>
+    <body>
+ 
+			<audio autoplay="autoplay" >
+					<source src="music/nhac.mp3" type="audio/mp3" />
+            </audio> 
+
+          
+
+        <div id="main">
+            <div id="error">Trình duyệt của bạn không được hỗ trợ. Để được hỗ trợ liên hệ daikupj@gmail.com. Hoặc sử dụng (<a href="http://www.google.cn/chrome">Chrome</a>) và (<a href="http://firefox.com/download/">Firefox</a>)</div>
+             <div id="wrap">
+                <div id="text" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif ;">
+			        <div id="code">
+			      <font color="#0000FF" ><span class="say">Chào các bạn!</span><br>
+						<span class="say"> </span><br>
+						<span class="say">Ngày 8/3 chúc một nửa thế giới luôn thành công trong cuộc sống!</span><br>
+						<span class="say">Chúc bạn luôn duyên dáng và xinh đẹp trong mắt một nửa thế giới còn lại.</span><br>
+						<span class="say">Kính chúc "một nửa" của nhân loại vui vẻ, hạnh phúc bên người thân yêu</span><br>
+                        <span class="say"><span class="space"><img src="image/tym.png" alt=""><br>
+                        <span class="say"><span class="space"></span> --Lớp trưởng--</span>
+			  </font></p>
+      </div>
+                </div>
+                <div id="clock-box">
+                    <span class="STYLE1"></span><font color="#FF0000">Ngày 8/3 cuối cùng ta ngồi với nhau đến nay đã....</font>
+<!-- <span class="STYLE1"> Time of love...</span> -->
+                  <div id="clock"></div>
+              </div>
+                <canvas id="canvas" width="1100" height="680"></canvas>
+            </div>
+            
+        </div>
+    
     <script>
-      const elts = {
-        text1: document.getElementById("text1"),
-        text2: document.getElementById("text2"),
-      };
-
-      const texts = ["💞", "Anh Yêu em", "Trần Thị Thanh"];
-
-      const morphTime = 1;
-      const cooldownTime = 0.25;
-
-      let textIndex = texts.length - 1;
-      let timeL = new Date();
-      let morph = 0;
-      let cooldown = cooldownTime;
-
-      elts.text1.textContent = texts[textIndex % texts.length];
-      elts.text2.textContent = texts[(textIndex + 1) % texts.length];
-
-      function doMorph() {
-        morph -= cooldown;
-        cooldown = 0;
-
-        let fraction = morph / morphTime;
-
-        if (fraction > 1) {
-          cooldown = cooldownTime;
-          fraction = 1;
-        }
-
-        setMorph(fraction);
-      }
-
-      // A lot of the magic happens here, this is what applies the blur filter to the text.
-      function setMorph(fraction) {
-        // fraction = Math.cos(fraction * Math.PI) / -2 + .5;
-
-        elts.text2.style.filter = `blur(${Math.min(8 / fraction - 8, 100)}px)`;
-        elts.text2.style.opacity = `${Math.pow(fraction, 0.4) * 100}%`;
-
-        fraction = 1 - fraction;
-        elts.text1.style.filter = `blur(${Math.min(8 / fraction - 8, 100)}px)`;
-        elts.text1.style.opacity = `${Math.pow(fraction, 0.4) * 100}%`;
-
-        elts.text1.textContent = texts[textIndex % texts.length];
-        elts.text2.textContent = texts[(textIndex + 1) % texts.length];
-      }
-
-      function doCooldown() {
-        morph = 0;
-
-        elts.text2.style.filter = "";
-        elts.text2.style.opacity = "100%";
-
-        elts.text1.style.filter = "";
-        elts.text1.style.opacity = "0%";
-      }
-
-      // Animation loop, which is called every frame.
-      function animate() {
-        requestAnimationFrame(animate);
-
-        let newTime = new Date();
-        let shouldIncrementIndex = cooldown > 0;
-        let dt = (newTime - timeL) / 1000;
-        timeL = newTime;
-
-        cooldown -= dt;
-
-        if (cooldown <= 0) {
-          if (shouldIncrementIndex) {
-            textIndex++;
-          }
-
-          doMorph();
-        } else {
-          doCooldown();
-        }
-      }
-
-      // Start the animation.
-      animate();
     </script>
 
-    <div class="body" id="btn-push">
-      <div class="grid"></div>
-
-      <div class="warning"></div>
-
-      <div class="base">
-        <button id="activate">
-          <span></span>
-        </button>
-      </div>
-
-      <div class="box opened" id="cover">
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <span></span><span></span>
-      </div>
-
-      <div class="hinges"></div>
-
-      <div class="text">LOSI</div>
-
-      <div id="panel">
-        <div id="msg">Có Yêu Anh Không hả?</div>
-        <div id="time">5</div>
-        <span id="accept">Có</span>
-        <span id="abort">Không</span>
-        <span id="detonate">DETONATE</span>
-      </div>
-
-      <div id="turn-off"></div>
-      <div id="closing"></div>
-
-      <div id="restart"><button id="reload"></button></div>
-
-      <div id="mute"></div>
-
-      <audio id="alarm">
-        <source
-          src="https://cdn.josetxu.com/audio/self-destruct-count.mp3"
-          type="audio/mpeg"
-        />
-      </audio>
-    </div>
-
     <script>
-      var theCount;
-      var alarm = document.getElementById("alarm");
-      var panel = document.getElementById("panel");
-      var turnOff = document.getElementById("turn-off");
-      var turnOffHor = document.getElementById("closing");
-      var detonate = document.getElementById("detonate");
-      alarm.volume = 0.5; //volume level - (changed from 0.25 to 0.5)
+    (function(){
+        var canvas = $('#canvas');
+		
+        if (!canvas[0].getContext) {
+            $("#error").show();
+            return false;        }
 
-      var time = document.getElementById("time");
-      function showCountDown() {
-        time.innerText = time.innerText - 1;
-        if (time.innerText == 0) {
-          clearInterval(theCount);
-          time.classList.add("crono");
-          abort.classList.add("hide");
-          detonate.classList.add("show");
-          setTimeout(function () {
-            turnOff.classList.add("close");
-            turnOffHor.classList.add("close");
-            reload.classList.add("show");
-            alarm.pause();
-
-            //action
-            setTimeout(() => {
-              document.querySelector("#btn-push").style.display = "none";
-              document.querySelector("#container").style.display = "flex";
-            }, 1000);
-          }, 1500);
+        var width = canvas.width();
+        var height = canvas.height();        
+        canvas.attr("width", width);
+        canvas.attr("height", height);
+        var opts = {
+            seed: {
+                x: width / 2 - 20,
+                color: "rgb(190, 26, 37)",
+                scale: 2
+            },
+            branch: [
+                [535, 680, 570, 250, 500, 200, 30, 100, [
+                    [540, 500, 455, 417, 340, 400, 13, 100, [
+                        [450, 435, 434, 430, 394, 395, 2, 40]
+                    ]],
+                    [550, 445, 600, 356, 680, 345, 12, 100, [
+                        [578, 400, 648, 409, 661, 426, 3, 80]
+                    ]],
+                    [539, 281, 537, 248, 534, 217, 3, 40],
+                    [546, 397, 413, 247, 328, 244, 9, 80, [
+                        [427, 286, 383, 253, 371, 205, 2, 40],
+                        [498, 345, 435, 315, 395, 330, 4, 60]
+                    ]],
+                    [546, 357, 608, 252, 678, 221, 6, 100, [
+                        [590, 293, 646, 277, 648, 271, 2, 80]
+                    ]]
+                ]] 
+            ],
+            bloom: {
+                num: 700,
+                width: 1080,
+                height: 650,
+            },
+            footer: {
+                width: 1200,
+                height: 5,
+                speed: 10,
+            }
         }
-      }
 
-      document.querySelector("#accept").onclick = function () {
-        clearInterval(theCount);
+        var tree = new Tree(canvas[0], width, height, opts);
+        var seed = tree.seed;
+        var foot = tree.footer;
+        var hold = 1;
 
-        turnOff.classList.add("close");
-        turnOffHor.classList.add("close");
-        reload.classList.add("show");
-        alarm.pause();
+        canvas.click(function(e) {
+            var offset = canvas.offset(), x, y;
+            x = e.pageX - offset.left;
+            y = e.pageY - offset.top;
+            if (seed.hover(x, y)) {
+                hold = 0; 
+                canvas.unbind("click");
+                canvas.unbind("mousemove");
+                canvas.removeClass('hand');
+            }
+        }).mousemove(function(e){
+            var offset = canvas.offset(), x, y;
+            x = e.pageX - offset.left;
+            y = e.pageY - offset.top;
+            canvas.toggleClass('hand', seed.hover(x, y));
+        });
 
-        //action
-        setTimeout(() => {
-          document.querySelector("#btn-push").style.display = "none";
-          document.querySelector("#container").style.display = "flex";
-        }, 500);
-      };
+        var seedAnimate = eval(Jscex.compile("async", function () {
+            seed.draw();
+            while (hold) {
+                $await(Jscex.Async.sleep(10));
+            }
+            while (seed.canScale()) {
+                seed.scale(0.95);
+                $await(Jscex.Async.sleep(10));
+            }
+            while (seed.canMove()) {
+                seed.move(0, 2);
+                foot.draw();
+                $await(Jscex.Async.sleep(10));
+            }
+        }));
 
-      var cover = document.getElementById("cover");
-      cover.addEventListener("click", function () {
-        if (this.className == "box") this.classList.add("opened");
-        else this.classList.remove("opened");
-      });
+        var growAnimate = eval(Jscex.compile("async", function () {
+            do {
+    	        tree.grow();
+                $await(Jscex.Async.sleep(10));
+            } while (tree.canGrow());
+        }));
 
-      var btn = document.getElementById("activate");
-      activate.addEventListener("click", function () {
-        this.classList.add("pushed");
-        alarm.load();
-        alarm.currentTime = 10.1;
-        alarm.play();
-        setTimeout(function () {
-          panel.classList.add("show");
-          theCount = setInterval(showCountDown, 1000);
-          alarm.load();
-          alarm.play();
-        }, 500);
-      });
+        var flowAnimate = eval(Jscex.compile("async", function () {
+            do {
+    	        tree.flower(2);
+                $await(Jscex.Async.sleep(10));
+            } while (tree.canFlower());
+        }));
 
-      let dem = 0;
-      var abort = document.getElementById("abort");
-      abort.addEventListener("click", function () {
-        // btn.classList.remove("pushed");
-        // panel.classList.remove("show");
-        // clearInterval(theCount);
-        // time.innerText = 9;
-        // alarm.pause();
-        // alarm.currentTime = 10;
-        // alarm.play();
-        if (dem == 0) {
-          dem += 1;
-          this.innerHTML = "YES";
-        } else {
-          clearInterval(theCount);
+        var moveAnimate = eval(Jscex.compile("async", function () {
+            tree.snapshot("p1", 240, 0, 610, 680);
+            while (tree.move("p1", 500, 0)) {
+                foot.draw();
+                $await(Jscex.Async.sleep(10));
+            }
+            foot.draw();
+            tree.snapshot("p2", 500, 0, 610, 680);
 
-          turnOff.classList.add("close");
-          turnOffHor.classList.add("close");
-          reload.classList.add("show");
-          alarm.pause();
+            canvas.parent().css("background", "url(" + tree.toDataURL('image/png') + ")");
+            canvas.css("background", "#ffe");
+            $await(Jscex.Async.sleep(300));
+            canvas.css("background", "none");
+        }));
 
-          //action
-          setTimeout(() => {
-            document.querySelector("#btn-push").style.display = "none";
-            document.querySelector("#container").style.display = "flex";
-          }, 500);
+        var jumpAnimate = eval(Jscex.compile("async", function () {
+            var ctx = tree.ctx;
+            while (true) {
+                tree.ctx.clearRect(0, 0, width, height);
+                tree.jump();
+                foot.draw();
+                $await(Jscex.Async.sleep(25));
+            }
+        }));
 
-          ƒ;
-        }
-      });
+        var textAnimate = eval(Jscex.compile("async", function () {
+		    var together = new Date();
+		    together.setFullYear(2018,2 , 8); 			
+		    together.setHours(0);							
+		    together.setMinutes(0);				
+		    together.setSeconds(0);					
+            together.setMilliseconds(0);
+            
+           
 
-      var reload = document.getElementById("restart");
-      reload.addEventListener("click", function () {
-        panel.classList.remove("show");
-        turnOff.classList.remove("close");
-        turnOffHor.classList.remove("close");
-        abort.classList.remove("hide");
-        detonate.classList.remove("show");
-        cover.classList.remove("opened");
-        btn.classList.remove("pushed");
-        this.classList.remove("show");
-        time.classList.remove("crono");
-        time.innerText = 9;
-      });
+		    $("#code").show().typewriter();
+            $("#clock-box").fadeIn(500);
+            while (true) {
+                timeElapse(together);
+                $await(Jscex.Async.sleep(1000));
+            }
+        }));
 
-      setTimeout(function () {
-        cover.classList.remove("opened");
-      }, 100);
+        var runAsync = eval(Jscex.compile("async", function () {
+            $await(seedAnimate());
+            $await(growAnimate());
+            $await(flowAnimate());
+            $await(moveAnimate());
 
-      var mute = document.getElementById("mute");
-      mute.addEventListener("click", function () {
-        if (this.className == "muted") {
-          alarm.muted = false;
-          this.classList.remove("muted");
-        } else {
-          alarm.muted = true;
-          this.classList.add("muted");
-        }
-      });
+            textAnimate().start();
+
+            $await(jumpAnimate());
+        }));
+
+        runAsync().start();
+    })();
     </script>
-  </body>
+<div style="text-align:center;margin:50px 0; font:normal 14px/24px 'MicroSoft YaHei';">
+<p>Contact: <a href="https://www.facebook.com/dai.vudangdai" target="_blank">dangdaiptit</a></p>
+</div>
+</body>
 </html>
